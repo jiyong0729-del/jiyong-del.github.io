@@ -2,297 +2,100 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>테트리스 & 프로젝트 백로그</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Visca Barcelona - 바르셀로나 도시 소개</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
-html,body{height:100%;background:#0f172a;color:#f8fafc;font-family:'Apple SD Gothic Neo','Noto Sans KR',sans-serif;overflow-x:hidden}
-#container{max-width:500px;margin:0 auto;padding:16px;display:flex;flex-direction:column;gap:20px}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:#0f172a;color:#f8fafc;font-family:'Apple SD Gothic Neo','Noto Sans KR',sans-serif;line-height:1.6;overflow-x:hidden}
 
-header{text-align:center;padding:10px 0;border-bottom:1px solid #334155}
-header h1{font-size:24px;color:#38bdf8;font-weight:800}
-header p{font-size:13px;color:#94a3b8;margin-top:4px}
+#container{max-width:700px;margin:0 auto;padding:20px;display:flex;flex-direction:column;gap:24px}
 
-/* 테트리스 게임 레이아웃 */
-#game-box{background:#1e293b;border-radius:16px;padding:16px;border:1px solid #334155;display:flex;flex-direction:column;align-items:center;gap:12px}
-.game-info{display:flex;justify-content:space-between;width:100%;max-width:300px;font-weight:700;font-size:15px;color:#cbd5e1}
-.info-card{background:#0f172a;padding:8px 14px;border-radius:8px;border:1px solid #334155;text-align:center}
-.info-card span{color:#38bdf8;font-size:18px;display:block}
+/* 히어로 헤더 */
+header{text-align:center;padding:32px 16px;background:linear-gradient(135deg, #1e3a8a, #991b1b);border-radius:16px;box-shadow:0 8px 20px rgba(0,0,0,0.4)}
+header h1{font-size:32px;font-weight:800;color:#fef08a;margin-bottom:8px;text-shadow:0 2px 4px rgba(0,0,0,0.5)}
+header p{font-size:15px;color:#e2e8f0}
 
-#canvas-wrap{position:relative}
-canvas{border-radius:8px;border:2px solid #334155;background:#0f172a;display:block;touch-action:none}
+/* 섹션 공통 스타일 */
+.section-card{background:#1e293b;border-radius:14px;padding:20px;border:1px solid #334155;box-shadow:0 4px 12px rgba(0,0,0,0.2)}
+.section-title{font-size:20px;font-weight:700;color:#38bdf8;margin-bottom:14px;display:flex;align-items:center;gap:8px;border-bottom:2px solid #334155;padding-bottom:8px}
 
-/* 모바일 모션 조작 버튼 */
-.controls{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%;max-width:300px}
-.btn{background:#334155;color:#fff;border:none;padding:12px;border-radius:8px;font-size:16px;font-weight:bold;cursor:pointer;text-align:center;transition:background 0.1s}
-.btn:active{background:#38bdf8;color:#0f172a}
-.btn-drop{grid-column:span 3;background:#0284c7}
+/* 명소 카드 그리드 */
+.grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:12px}
+.place-item{background:#0f172a;padding:14px;border-radius:10px;border:1px solid #334155;transition:transform 0.2s}
+.place-item:hover{transform:translateY(-3px);border-color:#38bdf8}
+.place-item h3{font-size:16px;color:#fef08a;margin-bottom:6px}
+.place-item p{font-size:13px;color:#94a3b8}
 
-/* 오버레이 팝업 */
-.ov{position:absolute;inset:0;background:rgba(15,23,42,0.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;border-radius:8px;z-index:10;text-align:center;padding:16px}
-.ov h2{font-size:28px;color:#38bdf8}
-.ov p{color:#94a3b8;font-size:14px}
-.ov button{font-size:16px;font-weight:800;padding:10px 24px;border-radius:8px;border:none;background:#38bdf8;color:#0f172a;cursor:pointer}
-.hide{display:none !important}
+/* 문화 및 축구 소개 */
+.info-list{list-style:none;display:flex;flex-direction:column;gap:10px}
+.info-item{background:#0f172a;padding:12px 14px;border-radius:8px;font-size:14px;color:#cbd5e1;border-left:4px solid #ef4444}
 
-/* 백로그 섹션 */
-.backlog-section{background:#1e293b;border-radius:12px;padding:16px;border:1px solid #334155}
+/* 백로그 섹션 (과제 제출 조건용) */
+.backlog-section{background:#1e293b;border-radius:14px;padding:20px;border:1px solid #334155}
 .backlog-section h2{font-size:18px;color:#38bdf8;margin-bottom:12px;display:flex;align-items:center;gap:6px}
 .backlog-list{list-style:none;display:flex;flex-direction:column;gap:8px}
 .backlog-item{background:#0f172a;padding:10px 12px;border-radius:8px;font-size:13px;color:#cbd5e1;display:flex;align-items:center;gap:8px}
 .badge{background:#334155;color:#38bdf8;font-size:11px;padding:2px 6px;border-radius:4px;font-weight:bold}
+
+footer{text-align:center;padding:16px 0;font-size:13px;color:#64748b}
 </style>
 </head>
 <body>
 
 <div id="container">
+  <!-- 메인 히어로 헤더 -->
   <header>
-    <h1>Namryuk Tetris</h1>
-    <p>GitHub Pages 배포 및 다음 스프린트 백로그</p>
+    <h1>BARCELONA 🇪🇸</h1>
+    <p>가우디의 예술과 카탈루냐의 열정이 숨쉬는 도시</p>
   </header>
 
-  <!-- 게임 영역 -->
-  <div id="game-box">
-    <div class="game-info">
-      <div class="info-card">SCORE<span id="score">0</span></div>
-      <div class="info-card">LINES<span id="lines">0</span></div>
-    </div>
-
-    <div id="canvas-wrap">
-      <canvas id="tetris" width="240" height="400"></canvas>
-      <div class="ov" id="ov">
-        <h2 id="ovT">TETRIS</h2>
-        <p id="ovP">방향키 또는 아래 버튼으로 조작하세요.</p>
-        <button id="start-btn">게임 시작</button>
+  <!-- 주요 명소 소개 -->
+  <div class="section-card">
+    <h2 class="section-title">🏛️ 대표 관광 명소</h2>
+    <div class="grid">
+      <div class="place-item">
+        <h3>사그라다 파밀리아</h3>
+        <p>안토니 가우디의 미완성 대작 성당. 독창적인 건축미의 결정체입니다.</p>
       </div>
-    </div>
-
-    <!-- 모바일 조작 버튼 -->
-    <div class="controls">
-      <button class="btn" onclick="playerMove(-1)">◀</button>
-      <button class="btn" onclick="playerRotate(1)">🔄</button>
-      <button class="btn" onclick="playerMove(1)">▶</button>
-      <button class="btn" onclick="playerDrop()">▼</button>
-      <button class="btn btn-drop" onclick="hardDrop()">SPACE (HARD DROP)</button>
+      <div class="place-item">
+        <h3>구엘 공원</h3>
+        <p>화려한 모자이크 타일과 지중해가 한눈에 보이는 동화 같은 공원입니다.</p>
+      </div>
+      <div class="place-item">
+        <h3>람블라 거리</h3>
+        <p>활기찬 버스킹과 보케리아 시장이 위치한 바르셀로나 중심 거리입니다.</p>
+      </div>
+      <div class="place-item">
+        <h3>카사 바트요</h3>
+        <p>바다를 형상화한 곡선과 곡면의 미학이 돋보이는 가우디의 대표작입니다.</p>
+      </div>
     </div>
   </div>
 
-  <!-- 과제 평가 요구사항: Next Sprint Backlog -->
+  <!-- 문화 및 음식 -->
+  <div class="section-card">
+    <h2 class="section-title">🍷 바르셀로나의 문화 & 맛</h2>
+    <ul class="info-list">
+      <li class="info-item"><strong>타파스 (Tapas):</strong> 한입 크기의 소량 요리로 즐기는 스페인 전통 식문화입니다.</li>
+      <li class="info-item"><strong>FC 바르셀로나 (FCB):</strong> 세계적인 축구 클럽 '스포티파이 캄 노우'의 열기를 느낄 수 있습니다.</li>
+      <li class="info-item"><strong>지중해 해변:</strong> 바르셀로네타 해변에서 라이프스타일과 여유를 즐길 수 있습니다.</li>
+    </ul>
+  </div>
+
+  <!-- 과제 평가용 Next Sprint Backlog -->
   <div class="backlog-section">
     <h2>📋 Next Sprint Backlog (할 일 목록)</h2>
     <ul class="backlog-list">
-      <li class="backlog-item"><span class="badge">Sprint 2</span> 다음 블록(Next Block) 미리보기 영역 구현</li>
-      <li class="backlog-item"><span class="badge">Sprint 2</span> 레벨 시스템 및 속도 증가 로직 추가</li>
-      <li class="backlog-item"><span class="badge">Sprint 3</span> 최고 점수(High Score) 로컬스토리지 저장 기능</li>
+      <li class="backlog-item"><span class="badge">Sprint 2</span> 명소별 고화질 이미지 갤러리 및 라이트박스 기능 추가</li>
+      <li class="backlog-item"><span class="badge">Sprint 2</span> 카카오맵/구글맵 API 연동을 통한 관광 지도 구현</li>
+      <li class="backlog-item"><span class="badge">Sprint 3</span> 날씨 정보 실시간 API 연동 및 추천 여행 코스 안내 기능</li>
     </ul>
   </div>
+
+  <footer>
+    <p>© 2026 Barcelona Guide Website. Built with GitHub Pages.</p>
+  </footer>
 </div>
 
-<script>
-const canvas = document.getElementById('tetris');
-const context = canvas.getContext('2d');
-context.scale(20, 20);
-
-// 블록 색상 설정
-const colors = [
-  null,
-  '#00f0f0', // I
-  '#0000f0', // J
-  '#f0a000', // L
-  '#f0f000', // O
-  '#00f000', // S
-  '#a000f0', // T
-  '#f00000'  // Z
-];
-
-// 테트리스 보드 생성 (12x20)
-function createMatrix(w, h) {
-  const matrix = [];
-  while (h--) matrix.push(new Array(w).fill(0));
-  return matrix;
-}
-
-// 블록 모양 정의
-function createPiece(type) {
-  if (type === 'I') return [[0,1,0,0],[0,1,0,0],[0,1,0,0],[0,1,0,0]];
-  else if (type === 'J') return [[0,2,0],[0,2,0],[2,2,0]];
-  else if (type === 'L') return [[0,3,0],[0,3,0],[0,3,3]];
-  else if (type === 'O') return [[4,4],[4,4]];
-  else if (type === 'S') return [[0,5,5],[5,5,0],[0,0,0]];
-  else if (type === 'T') return [[0,6,0],[6,6,6],[0,0,0]];
-  else if (type === 'Z') return [[7,7,0],[0,7,7],[0,0,0]];
-}
-
-const arena = createMatrix(12, 20);
-const player = { pos: {x: 0, y: 0}, matrix: null, score: 0, lines: 0 };
-
-function collide(arena, player) {
-  const [m, o] = [player.matrix, player.pos];
-  for (let y = 0; y < m.length; ++y) {
-    for (let x = 0; x < m[y].length; ++x) {
-      if (m[y][x] !== 0 && (arena[y + o.y] && arena[y + o.y][x + o.x]) !== 0) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
-
-function merge(arena, player) {
-  player.matrix.forEach((row, y) => {
-    row.forEach((value, x) => {
-      if (value !== 0) arena[y + player.pos.y][x + player.pos.x] = value;
-    });
-  });
-}
-
-function arenaSweep() {
-  let rowCount = 1;
-  outer: for (let y = arena.length - 1; y >= 0; --y) {
-    for (let x = 0; x < arena[y].length; ++x) {
-      if (arena[y][x] === 0) continue outer;
-    }
-    const row = arena.splice(y, 1)[0].fill(0);
-    arena.unshift(row);
-    ++y;
-    player.score += rowCount * 10;
-    player.lines += 1;
-    rowCount *= 2;
-  }
-  updateScore();
-}
-
-function draw() {
-  context.fillStyle = '#0f172a';
-  context.fillRect(0, 0, canvas.width, canvas.height);
-  drawMatrix(arena, {x: 0, y: 0});
-  drawMatrix(player.matrix, player.pos);
-}
-
-function drawMatrix(matrix, offset) {
-  matrix.forEach((row, y) => {
-    row.forEach((value, x) => {
-      if (value !== 0) {
-        context.fillStyle = colors[value];
-        context.fillRect(x + offset.x, y + offset.y, 1, 1);
-        context.lineWidth = 0.05;
-        context.strokeStyle = '#0f172a';
-        context.strokeRect(x + offset.x, y + offset.y, 1, 1);
-      }
-    });
-  });
-}
-
-function playerDrop() {
-  player.pos.y++;
-  if (collide(arena, player)) {
-    player.pos.y--;
-    merge(arena, player);
-    playerReset();
-    arenaSweep();
-  }
-  dropCounter = 0;
-}
-
-function hardDrop() {
-  while (!collide(arena, player)) {
-    player.pos.y++;
-  }
-  player.pos.y--;
-  merge(arena, player);
-  playerReset();
-  arenaSweep();
-  dropCounter = 0;
-}
-
-function playerMove(dir) {
-  player.pos.x += dir;
-  if (collide(arena, player)) player.pos.x -= dir;
-}
-
-function playerRotate(dir) {
-  const pos = player.pos.x;
-  let offset = 1;
-  rotate(player.matrix, dir);
-  while (collide(arena, player)) {
-    player.pos.x += offset;
-    offset = -(offset + (offset > 0 ? 1 : -1));
-    if (offset > player.matrix[0].length) {
-      rotate(player.matrix, -dir);
-      player.pos.x = pos;
-      return;
-    }
-  }
-}
-
-function rotate(matrix, dir) {
-  for (let y = 0; y < matrix.length; ++y) {
-    for (let x = 0; x < y; ++x) {
-      [matrix[x][y], matrix[y][x]] = [matrix[y][x], matrix[x][y]];
-    }
-  }
-  if (dir > 0) matrix.forEach(row => row.reverse());
-  else matrix.reverse();
-}
-
-function playerReset() {
-  const pieces = 'IJLOSTZ';
-  player.matrix = createPiece(pieces[pieces.length * Math.random() | 0]);
-  player.pos.y = 0;
-  player.pos.x = (arena[0].length / 2 | 0) - (player.matrix[0].length / 2 | 0);
-  if (collide(arena, player)) {
-    gameOver();
-  }
-}
-
-function updateScore() {
-  document.getElementById('score').innerText = player.score;
-  document.getElementById('lines').innerText = player.lines;
-}
-
-function gameOver() {
-  gameRunning = false;
-  document.getElementById('ovT').innerText = 'GAME OVER';
-  document.getElementById('ovP').innerText = `최종 점수: ${player.score}점`;
-  document.getElementById('start-btn').innerText = '다시 시작';
-  document.getElementById('ov').classList.remove('hide');
-}
-
-let dropCounter = 0;
-let dropInterval = 1000;
-let lastTime = 0;
-let gameRunning = false;
-
-function update(time = 0) {
-  if (!gameRunning) return;
-  const deltaTime = time - lastTime;
-  lastTime = time;
-  dropCounter += deltaTime;
-  if (dropCounter > dropInterval) playerDrop();
-  draw();
-  requestAnimationFrame(update);
-}
-
-document.addEventListener('keydown', event => {
-  if (!gameRunning) return;
-  if (event.keyCode === 37) playerMove(-1);       // Left
-  else if (event.keyCode === 39) playerMove(1);   // Right
-  else if (event.keyCode === 40) playerDrop();     // Down
-  else if (event.keyCode === 38) playerRotate(1);  // Up
-  else if (event.keyCode === 32) hardDrop();       // Space
-});
-
-document.getElementById('start-btn').onclick = () => {
-  arena.forEach(row => row.fill(0));
-  player.score = 0;
-  player.lines = 0;
-  updateScore();
-  playerReset();
-  document.getElementById('ov').classList.add('hide');
-  gameRunning = true;
-  lastTime = performance.now();
-  update();
-};
-</script>
 </body>
 </html>
